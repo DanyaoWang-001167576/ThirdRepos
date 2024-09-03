@@ -15,10 +15,34 @@ namespace Ticketing
         int mSection = 2;
         int mQuantity = 0;
         bool mDiscount = false;
+        bool mChildDiscount = false;
+        
 
         public TicketsForm()
         {
             InitializeComponent();
+
+            //add event handlers for checkboxes
+            chkDiscount.CheckedChanged += new EventHandler(chkDiscount_CheckedChanged);
+            chkChildDiscount.CheckedChanged += new EventHandler(chkChildDiscount_CheckedChanged);
+        }
+
+        private void chkDiscount_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkDiscount.Checked)
+            {
+                chkChildDiscount.Checked = false;
+                mDiscount = true;
+            }
+        }
+
+        private void chkChildDiscount_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkChildDiscount.Checked)
+            {
+                chkDiscount.Checked = false;
+                mChildDiscount = true;
+            }
         }
 
         private void TicketsForm_Load(object sender, EventArgs e)
@@ -32,6 +56,8 @@ namespace Ticketing
 
             if (chkDiscount.Checked)
                 { mDiscount = true; }
+            if (chkChildDiscount.Checked) 
+                { mChildDiscount = true; }
 
             if (radBalcony.Checked)
                 { mSection = 1; }
@@ -40,7 +66,7 @@ namespace Ticketing
             if (radBox.Checked)
                 { mSection = 3; }
 
-            mTicketPrice = new TicketPrice(mSection, mQuantity, mDiscount);
+            mTicketPrice = new TicketPrice(mSection, mQuantity, mDiscount, mChildDiscount);
 
             mTicketPrice.calculatePrice();
             lblAmount.Text = System.Convert.ToString(mTicketPrice.AmountDue);
